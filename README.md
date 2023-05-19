@@ -63,13 +63,41 @@ xuhuibadminton_button.click()
 schedule_tomorrow = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//*[@id="app"]/div/div[5]/div[3]/div[2]/div/div[2]/div[2]/div[2]')))
 schedule_tomorrow.click()
 
-未完待续
+# 等待加载后选择场地（此处为周末下午场地）
+max_attempts = 5  # 最大尝试次数
+attempts = 0  # 当前尝试次数
+
+while attempts < max_attempts:
+    try:
+        loca_button = WebDriverWait(driver, 10, 0.5).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="1627910056645750787"]'))
+        )
+        # 执行元素找到后的操作
+        loca_button.click()
+        break  # 如果成功找到元素，则跳出循环
+    except TimeoutException:
+        attempts += 1
+        print("元素查找超时，尝试刷新页面并重试...")
+        driver.refresh()  # 刷新页面
+
+buy_button = driver.find_element(By.XPATH,'//*[@id="app"]/div/div[5]/div[2]')
+buy_button.click()
+confirm_button = driver.find_element(By.XPATH,'//*[@id="app"]/div/div[1]/div/div/div[3]/div[2]')
+confirm_button.click()
 ```
+## 3.3补充说明
+### 3.3.1 元素定位
+使用chrome时，可以通过打开开发者模式后通过选定对应的元素进行检查，选定元素后，右键该元素copy并且选择XPATH便可以得到该元素的XPATH地址。
 
+### 3.3.2 
 
-## 学习与参考
-[^1]chatgpt
+## 4学习与参考
+[^1] chatgpt3.5
 
-[^2]https://zhuanlan.zhihu.com/p/111859925
+[^2] https://zhuanlan.zhihu.com/p/111859925
 
-[^3]https://www.selenium.dev/documentation/webdriver/elements/locators/
+[^3] https://www.selenium.dev/documentation/webdriver/elements/locators/
+
+## 5日记
+### 2023年5月19日
+今天采集了周六的场地的一个元素信息，采用的是XPATH方式，并且根据此完成了v0.3版本的脚本。v0.3能够选定特定的周末的场地并加以预定，其运行稳定性有待测试。v0.4展望：获取周内以及周末内所有场地的元素信息，并且检测其元素信息是否随时间改变；明确选定元素时的状态区别；获取下单以及再次确定时的返回信息，并根据返回信息继续执行操作。v0.4应当能够做到稳定地遍历所有可选择的元素直到成功选定。v1.0展望：更改学号、密码、选择场地时间段为变量，将所有功能包装为一个简易的exe或者app。
